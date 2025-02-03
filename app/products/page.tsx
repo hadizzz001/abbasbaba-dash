@@ -11,10 +11,11 @@ export default function AddProduct() {
   const [title, setTitle] = useState(''); 
   const [description, setDescription] = useState('');  
   const [price, setPrice] = useState(''); 
-  const [img, setImg] = useState(['']);
-  const [type, setType] = useState('products');  
+  const [img, setImg] = useState(['']); 
   const [categoryOptions, setCategoryOptions] = useState([]);  
   const [selectedCategory, setSelectedCategory] = useState('');  
+  const [subcategoryOptions, setSubCategoryOptions] = useState([]);  
+  const [selectedsubCategory, setSelectedsubCategory] = useState('');  
   const [brandOptions, setBrandOptions] = useState([]);  
   const [selectedBrand, setSelectedBrand] = useState('');  
 
@@ -22,7 +23,7 @@ export default function AddProduct() {
   useEffect(() => {
     async function fetchCategories() {
       try {
-        const response = await fetch(`/api/category/${type}`);
+        const response = await fetch(`/api/category`);
         if (response.ok) {
           const data = await response.json();
           setCategoryOptions(data);
@@ -35,7 +36,7 @@ export default function AddProduct() {
       }
     }
     fetchCategories();
-  }, [type]);
+  }, []);
 
   useEffect(() => {
     async function fetchCategories() {
@@ -54,6 +55,25 @@ export default function AddProduct() {
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const response = await fetch(`/api/subcategory/${selectedCategory}`);
+        if (response.ok) {
+          const data = await response.json();
+          console.log("subcategory ", data);
+          
+          setSubCategoryOptions(data);  
+        } else {
+          console.error('Failed to fetch subcategory');
+        }
+      } catch (error) {
+        console.error('Error fetching subcategory:', error);
+      }
+    }
+    fetchCategories();
+  }, [selectedCategory]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault(); 
@@ -69,7 +89,7 @@ else {
     brand: selectedBrand, 
     price, 
     img,
-    type,
+    subcategory: selectedsubCategory,
     category: selectedCategory,
   };
 
@@ -126,22 +146,6 @@ else {
       </select>
 
 
-            {/* Type Dropdown */}
-            <label className="block text-lg font-bold mb-2">Type</label>
-      <select
-        value={type}
-        onChange={(e) => setType(e.target.value)}
-        className="w-full border p-2 mb-4"
-        required
-      >
-        <option value="products">Products</option>
-        <option value="parts">Parts</option>
-      </select>
-
-
-      
-
-
       <label className="block text-lg font-bold mb-2">Category</label>
       <select
         value={selectedCategory}
@@ -158,6 +162,36 @@ else {
           </option>
         ))}
       </select>
+           
+
+
+      
+
+
+      {selectedCategory && (
+  <>
+    <label className="block text-lg font-bold mb-2">Sub Category</label>
+    <select
+      value={selectedsubCategory}
+      onChange={(e) => setSelectedsubCategory(e.target.value)}
+      className="w-full border p-2 mb-4"
+      required
+    >
+      <option value="" disabled>
+        Select a subcategory
+      </option>
+      {subcategoryOptions.map((category) => (
+        <option key={category.id} value={category.name}>
+          {category.name}
+        </option>
+      ))}
+    </select>
+  </>
+)}
+
+
+
+
  
       <input
         type="number"

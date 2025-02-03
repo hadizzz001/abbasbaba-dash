@@ -5,8 +5,8 @@ import Dropzone from '../components/Dropzone';
 import { redirect, useRouter } from 'next/navigation';
 
 const ManageCategory = () => {
-  const [formData, setFormData] = useState({ name: '', type: 'products'  });
-  const [editFormData, setEditFormData] = useState({ id: '', name: '', type: '' });
+  const [formData, setFormData] = useState({ name: '' });
+  const [editFormData, setEditFormData] = useState({ id: '', name: '' });
   const [message, setMessage] = useState('');
   const [categories, setCategories] = useState([]); 
   const [editMode, setEditMode] = useState(false);
@@ -56,8 +56,7 @@ const ManageCategory = () => {
     setEditMode(true);
     setEditFormData({
       id: category.id,
-      name: category.name,
-      type: category.type, 
+      name: category.name, 
     });  
   };
 
@@ -69,14 +68,13 @@ const ManageCategory = () => {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: editFormData.name,
-          type: editFormData.type
+          name: editFormData.name
         }),
       });
 
       if (res.ok) {
         window.location.reload(); 
-        setEditFormData({ id: '', name: '', type: '' });
+        setEditFormData({ id: '', name: ''  });
         setEditMode(false);
         fetchCategories();
         
@@ -134,22 +132,7 @@ const ManageCategory = () => {
             }
             required
           />
-        </div>
-        <div>
-          <label className="block mb-1">Type</label>
-          <select
-            className="border p-2 w-full"
-            value={editMode ? editFormData.type : formData.type}
-            onChange={(e) =>
-              editMode
-                ? setEditFormData({ ...editFormData, type: e.target.value })
-                : setFormData({ ...formData, type: e.target.value })
-            }
-          >
-            <option value="products">Products</option>
-            <option value="parts">Parts</option>
-          </select>
-        </div>
+        </div> 
       
         <button type="submit" className="bg-blue-500 text-white px-4 py-2">
           {editMode ? 'Update Category' : 'Add Category'}
@@ -161,8 +144,7 @@ const ManageCategory = () => {
       <table className="table-auto border-collapse border border-gray-300 w-full mt-4">
         <thead>
           <tr>
-            <th className="border border-gray-300 p-2">Name</th>
-            <th className="border border-gray-300 p-2">Type</th>
+            <th className="border border-gray-300 p-2">Name</th> 
             <th className="border border-gray-300 p-2">Actions</th>
           </tr>
         </thead>
@@ -170,8 +152,7 @@ const ManageCategory = () => {
           {categories.length > 0 ? (
             categories.map((category) => (
               <tr key={category.id}>
-                <td className="border border-gray-300 p-2">{category.name}</td>
-                <td className="border border-gray-300 p-2">{category.type}</td>
+                <td className="border border-gray-300 p-2">{category.name}</td> 
                 <td className="border border-gray-300 p-2 text-center">
                   <button
                     onClick={() => handleEdit(category)}

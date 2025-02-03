@@ -59,15 +59,16 @@ export default function RootLayout({
                 </a>
               </li> 
               <li className="nav-item">
+                <a href="/sub" className="nav-link text-white">
+                  Add subcategory
+                </a>
+              </li> 
+              <li className="nav-item">
                 <a href="/brand" className="nav-link text-white">
                   Add Brand
                 </a>
               </li> 
-              <li className="nav-item">
-                <a href="/home" className="nav-link text-white">
-                  Home Section
-                </a>
-              </li> 
+               
               <li className="nav-item">
                 <a href="/reservation" className="nav-link text-white">
                   Orders
