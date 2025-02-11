@@ -11,7 +11,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div style={{ position: "relative" }}>
+    <div id="sidenavv" style={{ position: "relative" }}>
       {/* Sidebar */}
       <nav
         style={{

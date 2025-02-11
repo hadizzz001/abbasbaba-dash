@@ -94,7 +94,7 @@ export default function Home() {
   </section>
   <style
         dangerouslySetInnerHTML={{
-          __html: "\n  #sidenavv{\n    display:none;\n}.flex-grow-1{\n    margin:0 !important;\n  }\n",
+          __html: "\n  #sidenavv{\n    display:none;\n} ",
         }}
       />
 </>
