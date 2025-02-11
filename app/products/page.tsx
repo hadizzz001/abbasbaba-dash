@@ -212,11 +212,18 @@ else {
       />
 
 <style
-        dangerouslySetInnerHTML={{
-          __html:
-            "\n  .uploadcare--widget {\n    background:black;\n  }\n  "
-        }}
-      />
+  dangerouslySetInnerHTML={{
+    __html:
+      "\n.uploadcare--widget__button_type_open { \n    background-color: #000 !important;\n}\n"
+  }}
+/> 
+
+<style
+  dangerouslySetInnerHTML={{
+    __html:
+      "   \n\n.uploadcare--button_size_big { \n    background-color: #000 !important;\n}\n"
+  }}
+/>
       <Dropzone HandleImagesChange={handleImgChange} /> 
 
 <div className='mt-20'></div>

@@ -29,7 +29,10 @@ export const GET = async (req: Request, res: NextResponse) => {
         
         
 
-        return NextResponse.json({ message: "Success", posts }, { status: 200 });
+        return new Response(JSON.stringify(posts), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          });
 
     }
     catch (err) {

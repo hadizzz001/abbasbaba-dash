@@ -11,20 +11,22 @@ import { useState, useEffect } from "react";
 
 
 const page = () => {
-    const [allTemp, setTemp] = useState<any>()
-    const router = useRouter()
-
-    const a = async () => {
-        const b = await fetchTemp1() 
-        setTemp(b)
-    }
-
+    const [allTemp, setTemp] = useState<any>() 
+  
+    // Fetch products and categories on load
     useEffect(() => {
-        a()
-    }, [])
-
-if(allTemp)
-    console.log(allTemp);
+      fetchProducts(); 
+    }, []);
+  
+    const fetchProducts = async () => {
+      const response = await fetch('/api/order');
+      if (response.ok) {
+        const data = await response.json();
+        setTemp(data);
+      } else {
+        console.error('Failed to fetch products');
+      }
+    };
     
 
 
@@ -62,8 +64,7 @@ if(allTemp)
                 <thead>
                     <tr>
                         <th scope="col">Order #</th>
-                        <th scope="col">Total Amount</th>
-                        <th scope="col">Order Date</th>
+                        <th scope="col">Total Amount</th> 
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -74,9 +75,8 @@ if(allTemp)
                             allTemp.map((post: any, index: any) => (
                                 <tr>
                                     <td>{post.id}</td>
-                                    <td>${(calculateFinalTotal(post.user).totalPrice + 3).toFixed(2)}</td>
-                                    <td>{post.createdAt}</td>
-                                    <td><Link className="text-blue-700 mr-3" href={`/order?id=${post.id}`}>View</Link></td>
+                                    <td>${(calculateFinalTotal(post.userInfo).totalPrice + 3).toFixed(2)}</td> 
+                                    <td><Link className="text-blue-700 mr-3 bg-black p-1"  href={`/order?id=${post.id}`}>View</Link></td>
                                 </tr>
                             ))
                         ) : (

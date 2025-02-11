@@ -1,26 +1,25 @@
-import { NextResponse } from "next/server";
-import prisma from "../../../libs/prismadb"
+import { PrismaClient } from '@prisma/client';
 
-export const GET = async (request, { params }) => {
-  try { 
-    const { id } = params;
+const prisma = new PrismaClient();
 
-    const posts = await prisma.order.findUnique({
-        where: {
-            id
-        }
+export async function GET(request, { params }) {
+  const { id } = params;  
+ 
+  try {
+   
+    const categories1 = await prisma.order.findUnique({
+      where: { id },
     });
 
-    if (!posts) {
-      return NextResponse.json(
-        { message: "Post not found", err },
-        { status: 404 }
-      )
-    } 
+    if (!categories1 || categories1.length === 0) {
+      return new Response(JSON.stringify({ message: 'No ids found for the specified type.' }), {
+        status: 404,
+      });
+    }
 
-    return NextResponse.json({ message: "Success", posts }, { status: 200 });
-  } catch (err) {
-    return NextResponse.json({ message: "GET Error", err }, { status: 500 });
+    return new Response(JSON.stringify(categories1), { status: 200 });
+  } catch (error) {
+    console.error('Error fetching ids:', error);
+    return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });
   }
-};
-
+}

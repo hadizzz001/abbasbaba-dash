@@ -15,28 +15,26 @@ model Product {
   img         String[]
   category    String
   subcategory String
-  brand        String
+  brand       String 
   createdAt   DateTime @default(now())
 }
 
 model Category {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
-  name String @unique 
+  name String @unique
 }
 
 model Subcategory {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  name String @unique
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  name     String @unique
   category String
 }
 
 model Brand {
   id   String   @id @default(auto()) @map("_id") @db.ObjectId
-  name String   @unique 
+  name String   @unique
   img  String[]
 }
-
- 
 
 model Order {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId

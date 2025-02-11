@@ -21,15 +21,23 @@ const page = () => {
 
 
 
+ 
 
-    const a = async () => {
-        const b = await fetchTemp3(search)
-        setTemp1(b)
-        setShowDetails(Array(b.info.length).fill(false));
-    }
+
     useEffect(() => {
-        a()
-    }, [])
+        const b = fetchProducts(); 
+        // setShowDetails(Array(b.cartItems.length).fill(false));
+      }, []);
+    
+      const fetchProducts = async () => {
+        const response = await fetch(`/api/order/${search}`);
+        if (response.ok) {
+          const data = await response.json();
+          setTemp1(data);
+        } else {
+          console.error('Failed to fetch products');
+        }
+      };
 
 
 
@@ -59,8 +67,8 @@ const page = () => {
 
 
     const calculateFinalTotal = () => {
-        if (allTemp1 && allTemp1.cartItems) {
-            const result = allTemp1.cartItems.reduce(
+        if (allTemp1 && allTemp1.userInfo) {
+            const result = allTemp1.userInfo.reduce(
                 (acc, post) => {
                     const price =  post.price;
                     const qty = post.quantity;
@@ -108,7 +116,7 @@ const page = () => {
                                     </thead>
                                     <tbody>
                                         {allTemp1 && Object?.keys(allTemp1).length > 0 ? (
-                                            allTemp1.cartItems.map((temp, index) => (
+                                            allTemp1.userInfo.map((temp, index) => (
 
                                                 <>
                                                     <tr>
@@ -155,15 +163,15 @@ const page = () => {
                                     <>
                                         <div className="flex justify-between mb-2">
                                             <span>Name</span>
-                                            <span>{allTemp1.userInfo.name}</span>
+                                            <span>{allTemp1.cartItems.fname} {allTemp1.cartItems.lname}</span>
                                         </div>
                                         <div className="flex justify-between mb-2">
                                             <span>Phone</span>
-                                            <span>{allTemp1.userInfo.phone}</span>
+                                            <span>{allTemp1.cartItems.phone}</span>
                                         </div> 
                                         <div className="flex justify-between mb-2">
                                             <span>Address</span>
-                                            <span>{allTemp1.userInfo.address}</span>
+                                            <span>{allTemp1.cartItems.address}</span>
                                         </div> 
                                         <hr className="my-2" />
                                         <div className="flex justify-between mb-2">
@@ -172,8 +180,8 @@ const page = () => {
                                         </div> 
                                         <div className="flex justify-between mb-2">
                                             <span className="font-semibold">Total Amount</span>
-                                            <span className="font-semibold">${(finalTotal.totalPrice)}</span>
-                                        </div>
+                                            <span className="font-semibold">${(finalTotal.totalPrice)+3}</span>
+                                        </div> 
                                     </>
                                 ) : (
                                     <div className='home___error-container'>
