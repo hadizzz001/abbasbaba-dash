@@ -155,8 +155,7 @@ export default function ProductTable() {
             <th className="border p-2">Title</th>
             <th className="border p-2">Pic</th>
             <th className="border p-2">Price (USD)</th> 
-            <th className="border p-2">Brand</th>
-            <th className="border p-2">Type</th>
+            <th className="border p-2">Brand</th> 
             <th className="border p-2">Category</th>
             <th className="border p-2">Actions</th>
           </tr>
@@ -169,8 +168,7 @@ export default function ProductTable() {
                 <img src={`api/proxy?url=${product.img[0]}`} alt="Product Image" className="w-24 h-auto" />
               </td>
               <td className="border p-2">{product.price}</td> 
-              <td className="border p-2">{product.brand}</td>
-              <td className="border p-2">{product.type}</td>
+              <td className="border p-2">{product.brand}</td> 
               <td className="border p-2">{product.category}</td>
               <td className="border p-2">
                 <button
