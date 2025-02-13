@@ -194,35 +194,132 @@ export default function ProductTable() {
 
 function EditProductForm({ product, onCancel, onSave }) {
   const [title, setTitle] = useState(product.title);
-  const [price, setPrice] = useState(product.price); 
   const [img, setImg] = useState(product.img || []);
   const [description, setDescription] = useState(product.description);
 
-  const handleSubmit = (e) => {
+  const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [subcategorys, setsubcategorys] = useState([]);
+
+  const [selectedCategory, setSelectedCategory] = useState(product.category || "");
+  const [selectedBrand, setSelectedBrand] = useState(product.brand || "");
+  const [selectedsubcategory, setSelectedsubcategory] = useState(product.subcategory || "");
+
+  const [isEditingCategory, setIsEditingCategory] = useState(false);
+  const [isEditingBrand, setIsEditingBrand] = useState(false);
+  const [isEditingsubcategory, setIsEditingsubcategory] = useState(false);
+
+  // Fetch options for category, brand, and subcategory
+  useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        const [categoriesRes, brandsRes, subcategorysRes] = await Promise.all([
+          fetch("/api/category"),
+          fetch("/api/brand"),
+          fetch(`/api/subcategory/${selectedCategory}`),
+        ]);
+
+        setCategories(await categoriesRes.json());
+        setBrands(await brandsRes.json());
+        setsubcategorys(await subcategorysRes.json());
+      } catch (error) {
+        console.error("Error fetching options:", error);
+      }
+    };
+
+    fetchOptions();
+  }, []);
+
+  const handleSubmit = (e) => { 
     e.preventDefault();
+
+    if(selectedsubcategory === ""){
+      alert("Please select a subcategory");
+      return;
+    } 
+
+
+
     onSave({
       ...product,
       title,
-      price, 
       description,
-      img
+      img,
+      category: selectedCategory,
+      brand: selectedBrand,
+      subcategory: selectedsubcategory,
     });
   };
-
 
   const handleImgChange = (url) => {
     if (url) {
       setImg(url);
     }
-  }
+  };
   
+
+
+  useEffect(() => {
+    if (selectedCategory) {
+      setSelectedsubcategory(""); // Reset subcategory when category changes
+      const fetchSubcategories = async () => {
+        try {
+          const res = await fetch(`/api/subcategory/${selectedCategory}`);
+          if (res.ok) {
+            const data = await res.json();
+            setsubcategorys(data);
+          } else {
+            console.error("Failed to fetch subcategories");
+          }
+        } catch (error) {
+          console.error("Error fetching subcategories:", error);
+        }
+      };
+      fetchSubcategories();
+    } else {
+      setsubcategorys([]); // Clear subcategory list if no category is selected
+    }
+  }, [selectedCategory]);
+  
+ 
+
+
+  useEffect(() => {
+    if (product.subcategory) {
+      setSelectedsubcategory(product.subcategory);
+    }
+  }, [product.subcategory]);
+  
+  const fetchSubcategories = async () => {
+    if (!selectedCategory) return;
+  
+    try {
+      const res = await fetch(`/api/subcategory/${selectedCategory}`);
+      if (res.ok) {
+        const data = await res.json();
+        setsubcategorys(data);
+      } else {
+        console.error("Failed to fetch subcategories");
+      }
+    } catch (error) {
+      console.error("Error fetching subcategories:", error);
+    }
+  };
+
+
+
+
+
 
   return (
     <form onSubmit={handleSubmit} className="border p-4 bg-gray-100 rounded">
       <h2 className="text-xl font-bold mb-4">Edit Product</h2>
 
+      {/* Title Input */}
       <div className="mb-4">
-        <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
+        <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+          Title
+        </label>
         <input
           id="title"
           type="text"
@@ -234,19 +331,100 @@ function EditProductForm({ product, onCancel, onSave }) {
         />
       </div>
 
+      {/* Category Input/Select */}
       <div className="mb-4">
-        <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price</label>
-        <input
-          id="price"
-          type="text"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          className="w-full border p-2"
-          placeholder="Price"
-          required
-        />
+        <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+          Category
+        </label>
+        {isEditingCategory ? (
+          <select
+            id="category"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            onBlur={() => setIsEditingCategory(false)}
+            className="w-full border p-2"
+          >
+            <option value="">Select Category</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.name}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <input
+            type="text"
+            value={selectedCategory}
+            onClick={() => setIsEditingCategory(true)}
+            readOnly
+            className="w-full border p-2 cursor-pointer"
+          />
+        )}
       </div>
 
+      {/* Brand Input/Select */}
+      <div className="mb-4">
+        <label htmlFor="brand" className="block text-sm font-medium text-gray-700">
+          Brand
+        </label>
+        {isEditingBrand ? (
+          <select
+            id="brand"
+            value={selectedBrand}
+            onChange={(e) => setSelectedBrand(e.target.value)}
+            onBlur={() => setIsEditingBrand(false)}
+            className="w-full border p-2"
+          >
+            <option value="">Select Brand</option>
+            {brands.map((brand) => (
+              <option key={brand.id} value={brand.name}>
+                {brand.name}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <input
+            type="text"
+            value={selectedBrand}
+            onClick={() => setIsEditingBrand(true)}
+            readOnly
+            className="w-full border p-2 cursor-pointer"
+          />
+        )}
+      </div>
+
+      {/* subcategory Input/Select */}
+      <div className="mb-4">
+        <label htmlFor="subcategory" className="block text-sm font-medium text-gray-700">
+        Subcategory
+        </label>
+        {isEditingsubcategory ? (
+          <select
+            id="subcategory"
+            value={selectedsubcategory}
+            onChange={(e) => setSelectedsubcategory(e.target.value)}
+            onBlur={() => setIsEditingsubcategory(false)}
+            className="w-full border p-2"
+          >
+            <option value="">Select subcategory</option>
+            {subcategorys.map((subcategory) => (
+              <option key={subcategory.id} value={subcategory.name}>
+                {subcategory.name}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <input
+            type="text"
+            value={selectedsubcategory}
+            onClick={() => setIsEditingsubcategory(true)}
+            readOnly
+            className="w-full border p-2 cursor-pointer"
+          />
+        )}
+      </div>
+
+      {/* Description Input */}
       <label className="block text-lg font-bold mb-2">Description</label>
       <ReactQuill
         value={description}
@@ -255,16 +433,20 @@ function EditProductForm({ product, onCancel, onSave }) {
         theme="snow"
         placeholder="Write your product description here..."
       />
- 
 
+      {/* Image Dropzone */}
       <style
         dangerouslySetInnerHTML={{
-          __html:
-            "\n  .uploadcare--widget {\n    background:black;\n  }\n  "
+          __html: `
+          .uploadcare--widget {
+            background: black;
+          }
+        `,
         }}
       />
       <Dropzone defaultValue={img} HandleImagesChange={handleImgChange} />
 
+      {/* Buttons */}
       <div className="flex gap-2">
         <button type="submit" className="bg-green-500 text-white px-4 py-2">
           Save
