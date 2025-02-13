@@ -194,6 +194,7 @@ export default function ProductTable() {
 
 function EditProductForm({ product, onCancel, onSave }) {
   const [title, setTitle] = useState(product.title);
+  const [price, setPrice] = useState(product.price);
   const [img, setImg] = useState(product.img || []);
   const [description, setDescription] = useState(product.description);
 
@@ -245,6 +246,7 @@ function EditProductForm({ product, onCancel, onSave }) {
       title,
       description,
       img,
+      price,
       category: selectedCategory,
       brand: selectedBrand,
       subcategory: selectedsubcategory,
@@ -423,8 +425,27 @@ function EditProductForm({ product, onCancel, onSave }) {
           />
         )}
       </div>
+ 
 
-      {/* Description Input */}
+
+
+       
+        <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+          Price
+        </label>
+        <input
+          id="price"
+          type="text"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          className="w-full border p-2"
+          placeholder="Price"
+          required
+        />
+       
+  
+
+
       <label className="block text-lg font-bold mb-2">Description</label>
       <ReactQuill
         value={description}

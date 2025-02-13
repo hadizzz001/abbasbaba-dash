@@ -14,7 +14,7 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const { name, type, img } = await req.json();
+    const { name, img } = await req.json();
     const category = await prisma.brand.create({ data: { name, img } });
     return new Response(JSON.stringify({ message: 'Category created successfully', category }), {
       status: 201,

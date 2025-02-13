@@ -5,10 +5,11 @@ import Dropzone from '../components/Dropzone';
 import { redirect, useRouter } from 'next/navigation';
 
 const ManageCategory = () => {
-  const [formData, setFormData] = useState({ name: '' });
-  const [editFormData, setEditFormData] = useState({ id: '', name: '' });
+  const [formData, setFormData] = useState({ name: '' , img: [] });
+  const [editFormData, setEditFormData] = useState({ id: '', name: '', img: [] });
   const [message, setMessage] = useState('');
-  const [categories, setCategories] = useState([]); 
+  const [categories, setCategories] = useState([]);
+  const [img, setImg] = useState([]); // Store images in an array
   const [editMode, setEditMode] = useState(false);
   const router = useRouter();
   // Fetch all categories
@@ -41,10 +42,11 @@ const ManageCategory = () => {
     });
 
     if (res.ok) {
-      setMessage('Category added successfully!');
-      setFormData({ name: '', type: 'products'  });
-      fetchCategories(); 
+      setMessage('category added successfully!');
+      setFormData({ name: '',  img: [] });
+      fetchCategories();
       window.location.href = '/category';
+      
     } else {
       const errorData = await res.json();
       setMessage(`Error: ${errorData.error}`);
@@ -57,7 +59,9 @@ const ManageCategory = () => {
     setEditFormData({
       id: category.id,
       name: category.name, 
-    });  
+      img: category.img,
+    });
+    setImg(category.img); // Populate img state with existing images for editing
   };
 
   const handleEditSubmit = async (e) => {
@@ -68,13 +72,14 @@ const ManageCategory = () => {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: editFormData.name
+          name: editFormData.name, 
+          img: img, // Ensure the updated image state is sent
         }),
       });
 
       if (res.ok) {
         window.location.reload(); 
-        setEditFormData({ id: '', name: ''  });
+        setEditFormData({ id: '', name: '' , img: [] });
         setEditMode(false);
         fetchCategories();
         
@@ -98,7 +103,7 @@ const ManageCategory = () => {
           method: 'DELETE',
         });
         if (res.ok) {
-          setMessage('Category deleted successfully!');
+          setMessage('category deleted successfully!');
           fetchCategories();
           redirect('/category');
         } else {
@@ -111,13 +116,21 @@ const ManageCategory = () => {
     }
   };
 
- 
+  const handleImgChange = (url) => {
+    if (url) {
+      setImg(url); // Update img state with new image URL
+    }
+  };
 
- 
+  useEffect(() => {
+    if (!img.includes('')) {
+      setFormData((prevState) => ({ ...prevState, img }));
+    }
+  }, [img]);
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">{editMode ? 'Edit Category' : 'Add Category'}</h1>
+      <h1 className="text-2xl font-bold mb-4">{editMode ? 'Edit category' : 'Add category'}</h1>
       <form onSubmit={editMode ? handleEditSubmit : handleSubmit} className="space-y-4">
         <div>
           <label className="block mb-1">Name</label>
@@ -132,10 +145,11 @@ const ManageCategory = () => {
             }
             required
           />
-        </div> 
-      
+        </div>
+       
+        <Dropzone HandleImagesChange={handleImgChange} />
         <button type="submit" className="bg-blue-500 text-white px-4 py-2">
-          {editMode ? 'Update Category' : 'Add Category'}
+          {editMode ? 'Update Category' : 'Add category'}
         </button>
       </form>
       {message && <p className="mt-4">{message}</p>}
@@ -144,7 +158,8 @@ const ManageCategory = () => {
       <table className="table-auto border-collapse border border-gray-300 w-full mt-4">
         <thead>
           <tr>
-            <th className="border border-gray-300 p-2">Name</th> 
+            <th className="border border-gray-300 p-2">Name</th>
+            <th className="border border-gray-300 p-2">Image</th>
             <th className="border border-gray-300 p-2">Actions</th>
           </tr>
         </thead>
@@ -152,7 +167,8 @@ const ManageCategory = () => {
           {categories.length > 0 ? (
             categories.map((category) => (
               <tr key={category.id}>
-                <td className="border border-gray-300 p-2">{category.name}</td> 
+                <td className="border border-gray-300 p-2">{category.name}</td>
+                <td className="border border-gray-300 p-2"><img src={`api/proxy?url=${category.img[0]}`}  alt="Product Image" className="w-24 h-auto" /></td>
                 <td className="border border-gray-300 p-2 text-center">
                   <button
                     onClick={() => handleEdit(category)}
@@ -172,7 +188,7 @@ const ManageCategory = () => {
           ) : (
             <tr>
               <td  className="border border-gray-300 p-2 text-center">
-                No categories found.
+                No categorys found.
               </td>
             </tr>
           )}
