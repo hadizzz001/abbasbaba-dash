@@ -60,6 +60,11 @@ export default function Sidebar() {
               </a>
             </li>
             <li>
+              <a href="/social" style={{ color: "white", textDecoration: "none" }}>
+                Social Media
+              </a>
+            </li>
+            <li>
               <a href="/" style={{ color: "white", textDecoration: "none" }}>
                 Logout
               </a>
