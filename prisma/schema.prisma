@@ -50,3 +50,9 @@ model Social {
   name String    
   link  String
 }
+
+
+model title {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+}

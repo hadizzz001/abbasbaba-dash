@@ -65,6 +65,11 @@ export default function Sidebar() {
               </a>
             </li>
             <li>
+              <a href="/hot" style={{ color: "white", textDecoration: "none" }}>
+                Hot sale header
+              </a>
+            </li>
+            <li>
               <a href="/" style={{ color: "white", textDecoration: "none" }}>
                 Logout
               </a>
