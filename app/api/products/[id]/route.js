@@ -15,6 +15,9 @@ export async function PATCH(request, { params }) {
     subcategory
   } = await request.json();
 
+  console.log("imgs are: ", img);
+  
+
   try {
     // Update product and its specifications
     const updatedProduct = await prisma.product.update({

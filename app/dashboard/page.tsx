@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Dropzone from '../components/Dropzone';
+import Upload from '../components/Upload';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css'; 
 
@@ -465,7 +465,7 @@ function EditProductForm({ product, onCancel, onSave }) {
         `,
         }}
       />
-      <Dropzone defaultValue={img} HandleImagesChange={handleImgChange} />
+      <Upload onImagesUpload={handleImgChange} />
 
       {/* Buttons */}
       <div className="flex gap-2">

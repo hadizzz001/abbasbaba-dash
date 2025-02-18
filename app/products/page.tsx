@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
-import Dropzone from '../components/Dropzone';
+import Upload from '../components/Upload';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -224,7 +224,7 @@ else {
       "   \n\n.uploadcare--button_size_big { \n    background-color: #000 !important;\n}\n"
   }}
 />
-      <Dropzone HandleImagesChange={handleImgChange} /> 
+      <Upload onImagesUpload={handleImgChange} /> 
 
 <div className='mt-20'></div>
 

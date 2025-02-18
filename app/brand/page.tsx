@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import Dropzone from '../components/Dropzone';
+import { useState, useEffect } from 'react'; 
+import Upload from '../components/Upload';
 import { redirect, useRouter } from 'next/navigation';
 
 const ManageCategory = () => {
@@ -66,34 +66,35 @@ const ManageCategory = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const res = await fetch(`/api/brand?id=${encodeURIComponent(editFormData.id)}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: editFormData.name, 
-          img: img, // Ensure the updated image state is sent
+          name: editFormData.name,
+          img: img, // Sends only the new image array
         }),
       });
-
+  
       if (res.ok) {
-        window.location.reload(); 
-        setEditFormData({ id: '', name: '' , img: [] });
+        // Clear the edit form and image state
+        setEditFormData({ id: '', name: '', img: [] });
+        setImg([]); // Remove all old images from state
         setEditMode(false);
         fetchCategories();
-        
-      } else {
         window.location.reload();
+      } else {
         const errorData = await res.json();
-        setMessage(`Error: ${errorData.error}`); 
+        setMessage(`Error: ${errorData.error}`);
+        window.location.reload();
       }
     } catch (error) {
-      window.location.reload();
       console.error('Error:', error);
-      setMessage('An error occurred while updating the category.'); 
+      setMessage('An error occurred while updating the category.');
     }
   };
+  
 
   // Delete category
   const handleDelete = async (id) => {
@@ -116,11 +117,13 @@ const ManageCategory = () => {
     }
   };
 
-  const handleImgChange = (url) => {
-    if (url) {
-      setImg(url); // Update img state with new image URL
+  const handleImgChange = (uploadedUrls) => {
+    if (uploadedUrls && uploadedUrls.length > 0) {
+      // Replace old images with new ones
+      setImg(uploadedUrls);
     }
   };
+  
 
   useEffect(() => {
     if (!img.includes('')) {
@@ -147,7 +150,8 @@ const ManageCategory = () => {
           />
         </div>
        
-        <Dropzone HandleImagesChange={handleImgChange} />
+        
+        <Upload onImagesUpload={handleImgChange} />
         <button type="submit" className="bg-blue-500 text-white px-4 py-2">
           {editMode ? 'Update Category' : 'Add Brand'}
         </button>

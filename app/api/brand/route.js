@@ -33,7 +33,8 @@ export async function PATCH(req) {
     const id = url.searchParams.get('id');
     if (!id) return new Response(JSON.stringify({ error: 'ID is required' }), { status: 400 });
  
-    const { name, img } = await req.json(); 
+    const { name, img } = await req.json();  
+    
 
 
     const updatedCategory = await prisma.brand.update({
