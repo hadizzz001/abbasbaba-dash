@@ -1,5 +1,6 @@
 "use client"
 
+
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
@@ -13,11 +14,10 @@ export default function AddProduct() {
   const [price, setPrice] = useState(''); 
   const [img, setImg] = useState(['']); 
   const [categoryOptions, setCategoryOptions] = useState([]);  
-  const [selectedCategory, setSelectedCategory] = useState('');  
-  const [subcategoryOptions, setSubCategoryOptions] = useState([]);  
-  const [selectedsubCategory, setSelectedsubCategory] = useState('');  
+  const [selectedCategory, setSelectedCategory] = useState('');   
   const [brandOptions, setBrandOptions] = useState([]);  
-  const [selectedBrand, setSelectedBrand] = useState('');  
+  const [selectedBrand, setSelectedBrand] = useState('');
+  const [isNewArrival, setIsNewArrival] = useState(false); // New Arrival State
 
   // Fetch categories based on selected type
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function AddProduct() {
         if (response.ok) {
           const data = await response.json();
           setCategoryOptions(data);
-          setSelectedCategory(''); // Reset the selected category when type changes
+          setSelectedCategory('');
         } else {
           console.error('Failed to fetch categories');
         }
@@ -39,7 +39,7 @@ export default function AddProduct() {
   }, []);
 
   useEffect(() => {
-    async function fetchCategories() {
+    async function fetchBrands() {
       try {
         const response = await fetch(`/api/brand`);
         if (response.ok) {
@@ -52,60 +52,41 @@ export default function AddProduct() {
         console.error('Error fetching brands:', error);
       }
     }
-    fetchCategories();
+    fetchBrands();
   }, []);
 
-  useEffect(() => {
-    async function fetchCategories() {
-      try {
-        const response = await fetch(`/api/subcategory/${selectedCategory}`);
-        if (response.ok) {
-          const data = await response.json();
-          console.log("subcategory ", data);
-          
-          setSubCategoryOptions(data);  
-        } else {
-          console.error('Failed to fetch subcategory');
-        }
-      } catch (error) {
-        console.error('Error fetching subcategory:', error);
-      }
-    }
-    fetchCategories();
-  }, [selectedCategory]);
-
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault(); 
-    
-if (img.length === 1 && img[0] === '') {
-  alert('Please choose atleast 1 image');
-}
 
-else {
-  const payload = {
-    title, 
-    description,
-    brand: selectedBrand, 
-    price, 
-    img,
-    subcategory: selectedsubCategory,
-    category: selectedCategory,
-  };
+    if (img.length === 1 && img[0] === '') {
+      alert('Please choose at least 1 image');
+      return;
+    }
 
-  const response = await fetch('/api/products', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
+    const payload = {
+      title, 
+      description,
+      brand: selectedBrand, 
+      price, 
+      img, 
+      category: selectedCategory,
+      ...(isNewArrival && { arrival: "yes" }) // Add arrival only if checked
+    };
 
-  if (response.ok) {
-    alert('Product added successfully!');
-    window.location.href = '/dashboard';
-  } else {
-    alert('Failed to add product');
-  }
-}
+    const response = await fetch('/api/products', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (response.ok) {
+      alert('Product added successfully!');
+      window.location.href = '/dashboard';
+    } else {
+      alert('Failed to add product');
+    }
   };
 
   const handleImgChange = (url) => {
@@ -125,9 +106,8 @@ else {
         className="w-full border p-2 mb-4"
         required
       /> 
- 
 
-      {/* brand Dropdown */}
+      {/* Brand Dropdown */}
       <label className="block text-lg font-bold mb-2">Brand</label>
       <select
         value={selectedBrand}
@@ -135,16 +115,13 @@ else {
         className="w-full border p-2 mb-4"
         required
       >
-        <option value="" disabled>
-          Select a Brand
-        </option>
+        <option value="" disabled>Select a Brand</option>
         {brandOptions.map((category) => (
           <option key={category.id} value={category.name}>
             {category.name}
           </option>
         ))}
       </select>
-
 
       <label className="block text-lg font-bold mb-2">Category</label>
       <select
@@ -153,46 +130,16 @@ else {
         className="w-full border p-2 mb-4"
         required
       >
-        <option value="" disabled>
-          Select a category
-        </option>
+        <option value="" disabled>Select a category</option>
         {categoryOptions.map((category) => (
           <option key={category.id} value={category.name}>
             {category.name}
           </option>
         ))}
       </select>
-           
-
-
-      
-
-
-      {selectedCategory && (
-  <>
-    <label className="block text-lg font-bold mb-2">Sub Category</label>
-    <select
-      value={selectedsubCategory}
-      onChange={(e) => setSelectedsubCategory(e.target.value)}
-      className="w-full border p-2 mb-4"
-      required
-    >
-      <option value="" disabled>
-        Select a subcategory
-      </option>
-      {subcategoryOptions.map((category) => (
-        <option key={category.id} value={category.name}>
-          {category.name}
-        </option>
-      ))}
-    </select>
-  </>
-)}
-
-
-
 
  
+
       <input
         type="number"
         step="0.01"
@@ -202,6 +149,7 @@ else {
         className="w-full border p-2 mb-4"
         required
       /> 
+
       <label className="block text-lg font-bold mb-2">Description</label>
       <ReactQuill
         value={description}
@@ -211,22 +159,19 @@ else {
         placeholder="Write your product description here..."
       />
 
-<style
-  dangerouslySetInnerHTML={{
-    __html:
-      "\n.uploadcare--widget__button_type_open { \n    background-color: #000 !important;\n}\n"
-  }}
-/> 
-
-<style
-  dangerouslySetInnerHTML={{
-    __html:
-      "   \n\n.uploadcare--button_size_big { \n    background-color: #000 !important;\n}\n"
-  }}
-/>
       <Upload onImagesUpload={handleImgChange} /> 
 
-<div className='mt-20'></div>
+      {/* New Arrival Checkbox */}
+      <div className="flex items-center my-4">
+        <input
+          type="checkbox"
+          id="newArrival"
+          checked={isNewArrival}
+          onChange={(e) => setIsNewArrival(e.target.checked)}
+          className="mr-2"
+        />
+        <label htmlFor="newArrival" className="text-lg font-bold">New Arrival</label>
+      </div>
 
       <button type="submit" className="bg-green-500 text-white px-4 py-2">
         Save Product

@@ -110,6 +110,9 @@ export default function ProductTable() {
 
 
 
+  console.log("data: ", products);
+  
+
 
   return (
     <div className="max-w-6xl mx-auto p-4">
@@ -157,6 +160,7 @@ export default function ProductTable() {
             <th className="border p-2">Price (USD)</th> 
             <th className="border p-2">Brand</th> 
             <th className="border p-2">Category</th>
+            <th className="border p-2">New Arrival</th>
             <th className="border p-2">Actions</th>
           </tr>
         </thead>
@@ -170,6 +174,7 @@ export default function ProductTable() {
               <td className="border p-2">{product.price}</td> 
               <td className="border p-2">{product.brand}</td> 
               <td className="border p-2">{product.category}</td>
+              <td className="border p-2">{product.arrival}</td>
               <td className="border p-2">
                 <button
                   onClick={() => handleEdit(product)}
@@ -196,33 +201,25 @@ function EditProductForm({ product, onCancel, onSave }) {
   const [title, setTitle] = useState(product.title);
   const [price, setPrice] = useState(product.price);
   const [img, setImg] = useState(product.img || []);
-  const [description, setDescription] = useState(product.description);
-
+  const [description, setDescription] = useState(product.description); 
   const [categories, setCategories] = useState([]);
-  const [brands, setBrands] = useState([]);
-  const [subcategorys, setsubcategorys] = useState([]);
-
+  const [brands, setBrands] = useState([]);  
   const [selectedCategory, setSelectedCategory] = useState(product.category || "");
-  const [selectedBrand, setSelectedBrand] = useState(product.brand || "");
-  const [selectedsubcategory, setSelectedsubcategory] = useState(product.subcategory || "");
-
+  const [selectedBrand, setSelectedBrand] = useState(product.brand || "");  
   const [isEditingCategory, setIsEditingCategory] = useState(false);
-  const [isEditingBrand, setIsEditingBrand] = useState(false);
-  const [isEditingsubcategory, setIsEditingsubcategory] = useState(false);
-
-  // Fetch options for category, brand, and subcategory
+  const [isEditingBrand, setIsEditingBrand] = useState(false); 
+  const [arrival, setArrival] = useState(product.arrival === 'yes');
+ 
   useEffect(() => {
     const fetchOptions = async () => {
       try {
-        const [categoriesRes, brandsRes, subcategorysRes] = await Promise.all([
+        const [categoriesRes, brandsRes] = await Promise.all([
           fetch("/api/category"),
-          fetch("/api/brand"),
-          fetch(`/api/subcategory/${selectedCategory}`),
+          fetch("/api/brand"), 
         ]);
 
         setCategories(await categoriesRes.json());
-        setBrands(await brandsRes.json());
-        setsubcategorys(await subcategorysRes.json());
+        setBrands(await brandsRes.json()); 
       } catch (error) {
         console.error("Error fetching options:", error);
       }
@@ -233,14 +230,7 @@ function EditProductForm({ product, onCancel, onSave }) {
 
   const handleSubmit = (e) => { 
     e.preventDefault();
-
-    if(selectedsubcategory === ""){
-      alert("Please select a subcategory");
-      return;
-    } 
-
-
-
+ 
     onSave({
       ...product,
       title,
@@ -248,8 +238,8 @@ function EditProductForm({ product, onCancel, onSave }) {
       img,
       price,
       category: selectedCategory,
-      brand: selectedBrand,
-      subcategory: selectedsubcategory,
+      brand: selectedBrand, 
+      arrival: arrival ? 'yes' : 'no',
     });
   };
 
@@ -259,65 +249,12 @@ function EditProductForm({ product, onCancel, onSave }) {
     }
   };
   
-
-
-  useEffect(() => {
-    if (selectedCategory) {
-      setSelectedsubcategory(""); // Reset subcategory when category changes
-      const fetchSubcategories = async () => {
-        try {
-          const res = await fetch(`/api/subcategory/${selectedCategory}`);
-          if (res.ok) {
-            const data = await res.json();
-            setsubcategorys(data);
-          } else {
-            console.error("Failed to fetch subcategories");
-          }
-        } catch (error) {
-          console.error("Error fetching subcategories:", error);
-        }
-      };
-      fetchSubcategories();
-    } else {
-      setsubcategorys([]); // Clear subcategory list if no category is selected
-    }
-  }, [selectedCategory]);
-  
  
-
-
-  useEffect(() => {
-    if (product.subcategory) {
-      setSelectedsubcategory(product.subcategory);
-    }
-  }, [product.subcategory]);
-  
-  const fetchSubcategories = async () => {
-    if (!selectedCategory) return;
-  
-    try {
-      const res = await fetch(`/api/subcategory/${selectedCategory}`);
-      if (res.ok) {
-        const data = await res.json();
-        setsubcategorys(data);
-      } else {
-        console.error("Failed to fetch subcategories");
-      }
-    } catch (error) {
-      console.error("Error fetching subcategories:", error);
-    }
-  };
-
-
-
-
-
 
   return (
     <form onSubmit={handleSubmit} className="border p-4 bg-gray-100 rounded">
       <h2 className="text-xl font-bold mb-4">Edit Product</h2>
-
-      {/* Title Input */}
+ 
       <div className="mb-4">
         <label htmlFor="title" className="block text-sm font-medium text-gray-700">
           Title
@@ -333,7 +270,7 @@ function EditProductForm({ product, onCancel, onSave }) {
         />
       </div>
 
-      {/* Category Input/Select */}
+      
       <div className="mb-4">
         <label htmlFor="category" className="block text-sm font-medium text-gray-700">
           Category
@@ -394,42 +331,7 @@ function EditProductForm({ product, onCancel, onSave }) {
           />
         )}
       </div>
-
-      {/* subcategory Input/Select */}
-      <div className="mb-4">
-        <label htmlFor="subcategory" className="block text-sm font-medium text-gray-700">
-        Subcategory
-        </label>
-        {isEditingsubcategory ? (
-          <select
-            id="subcategory"
-            value={selectedsubcategory}
-            onChange={(e) => setSelectedsubcategory(e.target.value)}
-            onBlur={() => setIsEditingsubcategory(false)}
-            className="w-full border p-2"
-          >
-            <option value="">Select subcategory</option>
-            {subcategorys.map((subcategory) => (
-              <option key={subcategory.id} value={subcategory.name}>
-                {subcategory.name}
-              </option>
-            ))}
-          </select>
-        ) : (
-          <input
-            type="text"
-            value={selectedsubcategory}
-            onClick={() => setIsEditingsubcategory(true)}
-            readOnly
-            className="w-full border p-2 cursor-pointer"
-          />
-        )}
-      </div>
  
-
-
-
-       
         <label htmlFor="price" className="block text-sm font-medium text-gray-700">
           Price
         </label>
@@ -442,10 +344,7 @@ function EditProductForm({ product, onCancel, onSave }) {
           placeholder="Price"
           required
         />
-       
-  
-
-
+        
       <label className="block text-lg font-bold mb-2">Description</label>
       <ReactQuill
         value={description}
@@ -455,18 +354,17 @@ function EditProductForm({ product, onCancel, onSave }) {
         placeholder="Write your product description here..."
       />
 
-      {/* Image Dropzone */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-          .uploadcare--widget {
-            background: black;
-          }
-        `,
-        }}
-      />
-      <Upload onImagesUpload={handleImgChange} />
 
+<div className="mb-4">
+        <input
+          type="checkbox"
+          checked={arrival}
+          onChange={(e) => setArrival(e.target.checked)}
+        />
+        <label className="ml-2 text-sm font-medium">New Arrival</label>
+      </div>
+ 
+      <Upload onImagesUpload={handleImgChange} /> 
       {/* Buttons */}
       <div className="flex gap-2">
         <button type="submit" className="bg-green-500 text-white px-4 py-2">
@@ -482,4 +380,4 @@ function EditProductForm({ product, onCancel, onSave }) {
       </div>
     </form>
   );
-}
+} 

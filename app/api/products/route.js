@@ -11,7 +11,8 @@ export async function POST(req) {
       img,
       category,
       brand,
-      subcategory} = body;
+      arrival
+      } = body;
 
 console.log("body are: ",body);
 
@@ -24,8 +25,9 @@ console.log("body are: ",body);
         price,
         img,
         category,
-        brand,
-        subcategory 
+        brand,        
+        arrival
+          
       },
     });
 
