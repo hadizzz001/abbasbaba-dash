@@ -14,8 +14,10 @@ model Product {
   price       String
   img         String[]
   category    String
-  box         String?
+  box         Json?
   brand       String
+  size       Json?
+  color       Json?
   arrival     String   @default("no")
   createdAt   DateTime @default(now())
 }

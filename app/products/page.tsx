@@ -1,11 +1,17 @@
 "use client"
-
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import Upload from '../components/Upload';
+import { FaCheck } from 'react-icons/fa'; // Importing FaCheck for the check mark icon
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+
+const colorOptions = [
+  '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF',  // Basic colors
+  '#FFFFFF', '#000000', '#F5F5DC', '#A52A2A', '#800080', '#FFD700',  // Added white, black, beige, brown, purple, gold
+  '#FFC0CB', '#008000', '#808080', '#D3D3D3', '#8B4513', '#FFD700'   // Light pink, green, gray, light gray, saddle brown, and gold
+];
 
 export default function AddProduct() {
   const [title, setTitle] = useState('');
@@ -17,7 +23,9 @@ export default function AddProduct() {
   const [brandOptions, setBrandOptions] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState('');
   const [isNewArrival, setIsNewArrival] = useState(false);
-  const [box, setNumberOfBoxes] = useState(''); // ✅ new state
+  const [box, setNumberOfBoxes] = useState([{ quantity: '' }]);
+  const [sizes, setSizes] = useState(['']);
+  const [colors, setColors] = useState([]);
 
   useEffect(() => {
     async function fetchCategories() {
@@ -54,6 +62,34 @@ export default function AddProduct() {
     fetchBrands();
   }, []);
 
+  const handleAddBox = () => {
+    setNumberOfBoxes([...box, { quantity: '' }]);
+  };
+
+  const handleBoxChange = (index, value) => {
+    const newBoxes = [...box];
+    newBoxes[index].quantity = value;
+    setNumberOfBoxes(newBoxes);
+  };
+
+  const handleAddSize = () => {
+    setSizes([...sizes, '']);
+  };
+
+  const handleSizeChange = (index, value) => {
+    const newSizes = [...sizes];
+    newSizes[index] = value;
+    setSizes(newSizes);
+  };
+
+  const handleColorSelect = (color) => {
+    if (colors.includes(color)) {
+      setColors(colors.filter((c) => c !== color));
+    } else {
+      setColors([...colors, color]);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -69,7 +105,9 @@ export default function AddProduct() {
       price,
       img,
       category: selectedCategory,
-      box, // ✅ included in payload
+      box,
+      sizes,
+      colors,
       ...(isNewArrival && { arrival: "yes" })
     };
 
@@ -147,16 +185,72 @@ export default function AddProduct() {
         required
       />
 
-      {/* ✅ Number of Boxes Input */}
-      <input
-        type="number"
-        placeholder="Number of Boxes"
-        value={box}
-        onChange={(e) => setNumberOfBoxes(e.target.value.toString())}
-        className="w-full border p-2 mb-4"
-        required
-      />
+      {/* Number of Boxes Inputs */}
+      <div className="mb-4">
+        <label className="block text-lg font-bold mb-2">Number of Boxes</label>
+        {box.map((boxField, index) => (
+          <div key={index} className="flex items-center mb-2">
+            <input
+              type="number"
+              value={boxField.quantity}
+              onChange={(e) => handleBoxChange(index, e.target.value)}
+              placeholder={`Box ${index + 1}`}
+              className="w-full border p-2 mr-2"
+            />
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={handleAddBox}
+          className="bg-blue-500 text-white px-4 py-2 mt-2"
+        >
+          Add Box
+        </button>
+      </div>
 
+      {/* Sizes Inputs */}
+      <div className="mb-4">
+        <label className="block text-lg font-bold mb-2">Sizes</label>
+        {sizes.map((sizeField, index) => (
+          <div key={index} className="flex items-center mb-2">
+            <input
+              type="text"
+              value={sizeField}
+              onChange={(e) => handleSizeChange(index, e.target.value)}
+              placeholder={`Size ${index + 1}`}
+              className="w-full border p-2 mr-2"
+            />
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={handleAddSize}
+          className="bg-blue-500 text-white px-4 py-2 mt-2"
+        >
+          Add Size
+        </button>
+      </div>
+
+      {/* Colors Selection */}
+      <div className="mb-4">
+        <label className="block text-lg font-bold mb-2">Colors</label>
+        <div className="flex flex-wrap">
+          {colorOptions.map((color) => (
+            <div
+              key={color}
+              onClick={() => handleColorSelect(color)}
+              className={`w-8 h-8 m-2 cursor-pointer rounded-full relative border-2 ${colors.includes(color) ? 'border-black' : ''}`}
+              style={{ backgroundColor: color }}
+            >
+              {colors.includes(color) && (
+                <FaCheck className="text-white absolute top-1 left-1 w-4 h-4" />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Description */}
       <label className="block text-lg font-bold mb-2">Description</label>
       <ReactQuill
         value={description}

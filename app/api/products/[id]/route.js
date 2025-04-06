@@ -12,12 +12,12 @@ export async function PATCH(request, { params }) {
     description,
     category,
     box,
+    size,
+    color,
     brand,
     arrival
      
-  } = await request.json();
-
-  console.log("imgs are: ", img);
+  } = await request.json(); 
   
 
   try {
@@ -32,6 +32,8 @@ export async function PATCH(request, { params }) {
         category,
         box,
         brand,
+        size,
+        color,
         arrival
          
       },

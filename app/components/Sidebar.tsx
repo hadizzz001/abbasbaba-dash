@@ -64,11 +64,11 @@ export default function Sidebar() {
                 Social Media
               </a>
             </li>
-            {/* <li>
+            <li>
               <a href="/banner" style={{ color: "white", textDecoration: "none" }}>
                 Banner
               </a>
-            </li> */}
+            </li>
             {/* <li>
               <a href="/hot" style={{ color: "white", textDecoration: "none" }}>
                 Hot sale header

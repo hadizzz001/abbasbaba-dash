@@ -11,6 +11,8 @@ export async function POST(req) {
       img,
       category,
       box,
+      size,
+      color,
       brand,
       arrival
       } = body;
@@ -24,6 +26,8 @@ console.log("body are: ",body);
         title,
         description,
         price,
+        size,
+        color,
         img,
         category,
         box,

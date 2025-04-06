@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Upload from '../components/Upload';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css'; 
+import { FaCheck } from 'react-icons/fa';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -199,30 +200,39 @@ export default function ProductTable() {
 
  
 
+ 
+ 
+const colorOptions = [
+  '#FF0000', '#00FF00', '#0000FF' , '#FF00FF', '#00FFFF',   
+  '#FFFFFF', '#000000', '#ffdc7a', '#A52A2A', '#800080', '#FFD700',  '#008000', '#808080' , '#8B4513'   
+];
+
 function EditProductForm({ product, onCancel, onSave }) {
   const [title, setTitle] = useState(product.title);
   const [price, setPrice] = useState(product.price);
   const [img, setImg] = useState(product.img || []);
-  const [description, setDescription] = useState(product.description); 
+  const [description, setDescription] = useState(product.description);
   const [categories, setCategories] = useState([]);
-  const [brands, setBrands] = useState([]);  
+  const [brands, setBrands] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(product.category || "");
-  const [selectedBrand, setSelectedBrand] = useState(product.brand || "");  
+  const [selectedBrand, setSelectedBrand] = useState(product.brand || "");
   const [isEditingCategory, setIsEditingCategory] = useState(false);
-  const [isEditingBrand, setIsEditingBrand] = useState(false); 
+  const [isEditingBrand, setIsEditingBrand] = useState(false);
   const [arrival, setArrival] = useState(product.arrival === 'yes');
-  const [box, setNumberOfBoxes] = useState(product.box || ''); // ✅ New state
+  const [box, setNumberOfBoxesArray] = useState(product.box || [""]);
+  const [size, setSizes] = useState(product.size || []);
+  const [color, setColors] = useState(product.color || []);
 
   useEffect(() => {
     const fetchOptions = async () => {
       try {
         const [categoriesRes, brandsRes] = await Promise.all([
           fetch("/api/category"),
-          fetch("/api/brand"), 
+          fetch("/api/brand"),
         ]);
 
         setCategories(await categoriesRes.json());
-        setBrands(await brandsRes.json()); 
+        setBrands(await brandsRes.json());
       } catch (error) {
         console.error("Error fetching options:", error);
       }
@@ -231,18 +241,52 @@ function EditProductForm({ product, onCancel, onSave }) {
     fetchOptions();
   }, []);
 
-  const handleSubmit = (e) => { 
+  const handleAddBox = () => {
+    setNumberOfBoxesArray([...box, ""]);
+  };
+
+  const handleBoxChange = (index, value) => {
+    const updatedBoxes = [...box];
+    updatedBoxes[index] = value;
+    setNumberOfBoxesArray(updatedBoxes);
+  };
+
+  const handleAddSize = () => {
+    setSizes([...size, ""]);
+  };
+
+  const handleSizeChange = (index, value) => {
+    const updatedSizes = [...size];
+    updatedSizes[index] = value;
+    setSizes(updatedSizes);
+  };
+
+  const handleColorSelect = (selectedColor) => {
+    if (color.includes(selectedColor)) {
+      // Remove the color if it's already selected
+      setColors(color.filter((c) => c !== selectedColor));
+    } else {
+      // Add the color to the selected colors array
+      setColors([...color, selectedColor]);
+    }
+  };
+  
+  
+
+  const handleSubmit = (e) => {
     e.preventDefault();
- 
+
     onSave({
       ...product,
       title,
       description,
       img,
       price,
-      box, // ✅ Include in payload
+      box,
+      size,
+      color,
       category: selectedCategory,
-      brand: selectedBrand, 
+      brand: selectedBrand,
       arrival: arrival ? 'yes' : 'no',
     });
   };
@@ -347,31 +391,99 @@ function EditProductForm({ product, onCancel, onSave }) {
         />
       </div>
 
-      {/* ✅ Number of Boxes Field */}
+      {/* Dynamic Number of Boxes Fields */}
       <div className="mb-4">
         <label htmlFor="numberOfBoxes" className="block text-sm font-medium text-gray-700">
           Number of Boxes
         </label>
-        <input
-          id="numberOfBoxes"
-          type="number"
-          value={box}
-          onChange={(e) => setNumberOfBoxes(e.target.value.toString())}
-          className="w-full border p-2"
-          placeholder="Number of Boxes"
-          required
+        {box?.map((box, index) => (
+          <div key={index} className="flex items-center mb-2">
+            <input
+              type="number"
+              value={box}
+              onChange={(e) => handleBoxChange(index, e.target.value)}
+              className="w-full border p-2 mr-2"
+              placeholder="Box Number"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                const updatedBoxes = box.filter((_, i) => i !== index);
+                setNumberOfBoxesArray(updatedBoxes); // Remove the box at the current index
+              }}
+              className="bg-red-500 text-white px-2 py-1"
+            >
+              X
+            </button>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={handleAddBox}
+          className="bg-blue-500 text-white px-4 py-2 mt-2"
+        >
+          + Add Box
+        </button>
+      </div>
+
+      {/* Sizes Inputs */}
+      <div className="mb-4">
+        <label htmlFor="sizes" className="block text-sm font-medium text-gray-700">
+          Sizes
+        </label>
+        {size?.map((size, index) => (
+          <div key={index} className="flex items-center mb-2">
+            <input
+              type="text"
+              value={size}
+              onChange={(e) => handleSizeChange(index, e.target.value)}
+              className="w-full border p-2 mr-2"
+              placeholder="Size"
+            />
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={handleAddSize}
+          className="bg-blue-500 text-white px-4 py-2 mt-2"
+        >
+          + Add Size
+        </button>
+      </div>
+
+      {/* Colors Selection */}
+      <div className="mb-4">
+  <label className="block text-sm font-medium text-gray-700">Colors</label>
+  <div className="flex flex-wrap">
+    {colorOptions.map((colorOption) => (
+      <div
+        key={colorOption}
+        onClick={() => handleColorSelect(colorOption)}
+        className={`w-8 h-8 m-2 cursor-pointer rounded-full relative border-2 ${color.includes(colorOption) ? 'border-black' : ''}`}
+        style={{ backgroundColor: colorOption }}
+      >
+        {color.includes(colorOption) && (
+          <FaCheck className="text-white absolute top-1 left-1 w-4 h-4" />
+        )}
+      </div>
+    ))}
+  </div>
+</div>
+
+
+      {/* Description */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700">Description</label>
+        <ReactQuill
+          value={description}
+          onChange={setDescription}
+          className="mb-4"
+          theme="snow"
+          placeholder="Write your product description here..."
         />
       </div>
 
-      <label className="block text-lg font-bold mb-2">Description</label>
-      <ReactQuill
-        value={description}
-        onChange={setDescription}
-        className="mb-4"
-        theme="snow"
-        placeholder="Write your product description here..."
-      />
-
+      {/* New Arrival Checkbox */}
       <div className="mb-4">
         <input
           type="checkbox"
@@ -398,4 +510,4 @@ function EditProductForm({ product, onCancel, onSave }) {
     </form>
   );
 }
- 
+
