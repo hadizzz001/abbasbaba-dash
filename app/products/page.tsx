@@ -8,9 +8,8 @@ import { FaCheck } from 'react-icons/fa'; // Importing FaCheck for the check mar
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 const colorOptions = [
-  '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF',  // Basic colors
-  '#FFFFFF', '#000000', '#F5F5DC', '#A52A2A', '#800080', '#FFD700',  // Added white, black, beige, brown, purple, gold
-  '#FFC0CB', '#008000', '#808080', '#D3D3D3', '#8B4513', '#FFD700'   // Light pink, green, gray, light gray, saddle brown, and gold
+  '#FF0000', '#00FF00', '#0000FF' , '#FF00FF', '#00FFFF',   
+  '#FFFFFF', '#000000', '#ffdc7a', '#A52A2A', '#800080', '#FFD700',  '#008000', '#808080' , '#8B4513'   
 ];
 
 export default function AddProduct() {
