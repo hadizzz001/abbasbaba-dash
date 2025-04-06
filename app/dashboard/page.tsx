@@ -197,6 +197,8 @@ export default function ProductTable() {
   );
 }
 
+ 
+
 function EditProductForm({ product, onCancel, onSave }) {
   const [title, setTitle] = useState(product.title);
   const [price, setPrice] = useState(product.price);
@@ -209,7 +211,8 @@ function EditProductForm({ product, onCancel, onSave }) {
   const [isEditingCategory, setIsEditingCategory] = useState(false);
   const [isEditingBrand, setIsEditingBrand] = useState(false); 
   const [arrival, setArrival] = useState(product.arrival === 'yes');
- 
+  const [box, setNumberOfBoxes] = useState(product.box || ''); // ✅ New state
+
   useEffect(() => {
     const fetchOptions = async () => {
       try {
@@ -237,6 +240,7 @@ function EditProductForm({ product, onCancel, onSave }) {
       description,
       img,
       price,
+      box, // ✅ Include in payload
       category: selectedCategory,
       brand: selectedBrand, 
       arrival: arrival ? 'yes' : 'no',
@@ -248,13 +252,11 @@ function EditProductForm({ product, onCancel, onSave }) {
       setImg(url);
     }
   };
-  
- 
 
   return (
     <form onSubmit={handleSubmit} className="border p-4 bg-gray-100 rounded">
       <h2 className="text-xl font-bold mb-4">Edit Product</h2>
- 
+
       <div className="mb-4">
         <label htmlFor="title" className="block text-sm font-medium text-gray-700">
           Title
@@ -270,7 +272,6 @@ function EditProductForm({ product, onCancel, onSave }) {
         />
       </div>
 
-      
       <div className="mb-4">
         <label htmlFor="category" className="block text-sm font-medium text-gray-700">
           Category
@@ -301,7 +302,6 @@ function EditProductForm({ product, onCancel, onSave }) {
         )}
       </div>
 
-      {/* Brand Input/Select */}
       <div className="mb-4">
         <label htmlFor="brand" className="block text-sm font-medium text-gray-700">
           Brand
@@ -331,7 +331,8 @@ function EditProductForm({ product, onCancel, onSave }) {
           />
         )}
       </div>
- 
+
+      <div className="mb-4">
         <label htmlFor="price" className="block text-sm font-medium text-gray-700">
           Price
         </label>
@@ -344,7 +345,24 @@ function EditProductForm({ product, onCancel, onSave }) {
           placeholder="Price"
           required
         />
-        
+      </div>
+
+      {/* ✅ Number of Boxes Field */}
+      <div className="mb-4">
+        <label htmlFor="numberOfBoxes" className="block text-sm font-medium text-gray-700">
+          Number of Boxes
+        </label>
+        <input
+          id="numberOfBoxes"
+          type="number"
+          value={box}
+          onChange={(e) => setNumberOfBoxes(e.target.value.toString())}
+          className="w-full border p-2"
+          placeholder="Number of Boxes"
+          required
+        />
+      </div>
+
       <label className="block text-lg font-bold mb-2">Description</label>
       <ReactQuill
         value={description}
@@ -354,8 +372,7 @@ function EditProductForm({ product, onCancel, onSave }) {
         placeholder="Write your product description here..."
       />
 
-
-<div className="mb-4">
+      <div className="mb-4">
         <input
           type="checkbox"
           checked={arrival}
@@ -363,9 +380,9 @@ function EditProductForm({ product, onCancel, onSave }) {
         />
         <label className="ml-2 text-sm font-medium">New Arrival</label>
       </div>
- 
-      <Upload onImagesUpload={handleImgChange} /> 
-      {/* Buttons */}
+
+      <Upload onImagesUpload={handleImgChange} />
+
       <div className="flex gap-2">
         <button type="submit" className="bg-green-500 text-white px-4 py-2">
           Save
@@ -380,4 +397,5 @@ function EditProductForm({ product, onCancel, onSave }) {
       </div>
     </form>
   );
-} 
+}
+ 

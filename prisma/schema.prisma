@@ -13,9 +13,10 @@ model Product {
   description String
   price       String
   img         String[]
-  category    String 
+  category    String
+  box         String?
   brand       String
-  arrival     String @default("no")
+  arrival     String   @default("no")
   createdAt   DateTime @default(now())
 }
 
@@ -52,4 +53,9 @@ model Social {
 model title {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   title String
+}
+
+model Banner {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  img  String[]
 }
