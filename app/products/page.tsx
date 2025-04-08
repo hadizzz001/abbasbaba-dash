@@ -1,15 +1,15 @@
-"use client"
+"use client";
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import Upload from '../components/Upload';
-import { FaCheck } from 'react-icons/fa'; // Importing FaCheck for the check mark icon
+import { FaCheck } from 'react-icons/fa';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 const colorOptions = [
-  '#FF0000', '#00FF00', '#0000FF' , '#FF00FF', '#00FFFF',   
-  '#FFFFFF', '#000000', '#ffdc7a', '#A52A2A', '#800080', '#FFD700',  '#008000', '#808080' , '#8B4513'   
+  '#FF0000', '#00FF00', '#0000FF', '#FF00FF', '#00FFFF',
+  '#FFFFFF', '#000000', '#ffdc7a', '#A52A2A', '#800080', '#FFD700', '#008000', '#808080', '#8B4513'
 ];
 
 export default function AddProduct() {
@@ -22,7 +22,7 @@ export default function AddProduct() {
   const [brandOptions, setBrandOptions] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState('');
   const [isNewArrival, setIsNewArrival] = useState(false);
-  const [box, setNumberOfBoxes] = useState([{ quantity: '' }]);
+  const [box, setNumberOfBoxes] = useState([]); // now string[]
   const [sizes, setSizes] = useState(['']);
   const [colors, setColors] = useState([]);
 
@@ -62,12 +62,12 @@ export default function AddProduct() {
   }, []);
 
   const handleAddBox = () => {
-    setNumberOfBoxes([...box, { quantity: '' }]);
+    setNumberOfBoxes([...box, '']);
   };
 
   const handleBoxChange = (index, value) => {
     const newBoxes = [...box];
-    newBoxes[index].quantity = value;
+    newBoxes[index] = value;
     setNumberOfBoxes(newBoxes);
   };
 
@@ -104,7 +104,7 @@ export default function AddProduct() {
       price,
       img,
       category: selectedCategory,
-      box,
+      box, // already string[]
       sizes,
       colors,
       ...(isNewArrival && { arrival: "yes" })
@@ -143,7 +143,6 @@ export default function AddProduct() {
         required
       />
 
-      {/* Brand Dropdown */}
       <label className="block text-lg font-bold mb-2">Brand</label>
       <select
         value={selectedBrand}
@@ -191,7 +190,7 @@ export default function AddProduct() {
           <div key={index} className="flex items-center mb-2">
             <input
               type="number"
-              value={boxField.quantity}
+              value={boxField}
               onChange={(e) => handleBoxChange(index, e.target.value)}
               placeholder={`Box ${index + 1}`}
               className="w-full border p-2 mr-2"
@@ -249,7 +248,6 @@ export default function AddProduct() {
         </div>
       </div>
 
-      {/* Description */}
       <label className="block text-lg font-bold mb-2">Description</label>
       <ReactQuill
         value={description}
