@@ -105,8 +105,8 @@ export default function AddProduct() {
       img,
       category: selectedCategory,
       box, // already string[]
-      sizes,
-      colors,
+      size: sizes,
+      color: colors,
       ...(isNewArrival && { arrival: "yes" })
     };
 
