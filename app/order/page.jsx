@@ -21,23 +21,23 @@ const page = () => {
 
 
 
- 
+
 
 
     useEffect(() => {
-        const b = fetchProducts(); 
+        const b = fetchProducts();
         // setShowDetails(Array(b.cartItems.length).fill(false));
-      }, []);
-    
-      const fetchProducts = async () => {
+    }, []);
+
+    const fetchProducts = async () => {
         const response = await fetch(`/api/order/${search}`);
         if (response.ok) {
-          const data = await response.json();
-          setTemp1(data);
+            const data = await response.json();
+            setTemp1(data);
         } else {
-          console.error('Failed to fetch products');
+            console.error('Failed to fetch products');
         }
-      };
+    };
 
 
 
@@ -70,7 +70,7 @@ const page = () => {
         if (allTemp1 && allTemp1.userInfo) {
             const result = allTemp1.userInfo.reduce(
                 (acc, post) => {
-                    const price =  post.price;
+                    const price = post.price;
                     const qty = post.quantity;
                     acc.totalPrice += isNaN(price) || isNaN(qty) ? 0 : price * qty;
                     acc.totalItems += isNaN(qty) ? 0 : qty;
@@ -98,7 +98,7 @@ const page = () => {
 
 
     return (
-        <> 
+        <>
             <div className="bg-gray-100 h-screen py-8">
                 <div className="container mx-auto px-4">
                     <h1 className="text-2xl font-semibold mb-4">Order #{search}</h1>
@@ -110,8 +110,10 @@ const page = () => {
                                         <tr>
                                             <th className="text-left font-semibold">Product</th>
                                             <th className="text-left font-semibold">Price</th>
+                                            <th className="text-left font-semibold">Color</th>
+                                            <th className="text-left font-semibold">Size</th>
                                             <th className="text-left font-semibold">Quantity</th>
-                                            <th className="text-left font-semibold">Total</th> 
+                                            <th className="text-left font-semibold">Total</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -121,11 +123,20 @@ const page = () => {
                                                 <>
                                                     <tr>
                                                         <td className="py-4">
-                                                            <div className="flex items-center"> 
+                                                            <div className="flex items-center">
                                                                 <span className="font-semibold">{temp.title}</span>
                                                             </div>
                                                         </td>
-                                                        <td className="py-4">${temp.price}</td>
+                                                        <td className="py-4">${temp.price}</td> 
+                                                        <td className="py-4">
+  {temp.color ? (
+    <div className="w-5 h-5 rounded-full border-2" style={{ backgroundColor: temp.color }}></div>
+  ) : (
+    <span> </span>
+  )}
+</td>
+
+                                                        <td className="py-4">{temp.size}</td>
                                                         <td className="py-4">
                                                             <div className="flex items-center">
                                                                 <span className="text-center w-8">{temp.quantity}</span>
@@ -133,10 +144,11 @@ const page = () => {
                                                         </td>
                                                         <td className="py-4">${temp.quantity * +temp.price}</td>
 
-                                                        
+
+
 
                                                     </tr>
- 
+
 
 
                                                 </>
@@ -168,20 +180,20 @@ const page = () => {
                                         <div className="flex justify-between mb-2">
                                             <span>Phone</span>
                                             <span>{allTemp1.cartItems.phone}</span>
-                                        </div> 
+                                        </div>
                                         <div className="flex justify-between mb-2">
                                             <span>Address</span>
                                             <span>{allTemp1.cartItems.address}</span>
-                                        </div> 
+                                        </div>
                                         <hr className="my-2" />
-                                        <div className="flex justify-between mb-2">
+                                        {/* <div className="flex justify-between mb-2">
                                             <span className="font-semibold">Total Items</span>
                                             <span className="font-semibold">{finalTotal.totalItems}</span>
-                                        </div> 
+                                        </div>  */}
                                         <div className="flex justify-between mb-2">
                                             <span className="font-semibold">Total Amount</span>
-                                            <span className="font-semibold">${(finalTotal.totalPrice)+3}</span>
-                                        </div> 
+                                            <span className="font-semibold">${(finalTotal.totalPrice) + 5}</span>
+                                        </div>
                                     </>
                                 ) : (
                                     <div className='home___error-container'>
