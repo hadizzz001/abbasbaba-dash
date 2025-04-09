@@ -1,6 +1,5 @@
 
-"use client"
-import Link from "next/link"; 
+"use client" 
 import { useState, useEffect } from "react";
 
 
@@ -75,7 +74,7 @@ console.log("allTemp ", allTemp)
                                 <tr>
                                     <td>{post.cartItems.phone}</td>
                                     <td>${(calculateFinalTotal(post.userInfo).totalPrice + 5).toFixed(2)}</td> 
-                                    <td><Link className="text-blue-700 mr-3 bg-black p-1"  href={`/order?id=${post.id}`}>View</Link></td>
+                                    <td><a className="text-blue-700 mr-3 bg-black p-1"  href={`/order?id=${post.id}`}>View</a></td>
                                 </tr>
                             ))
                         ) : (
