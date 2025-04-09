@@ -187,16 +187,29 @@ export default function AddProduct() {
       <div className="mb-4">
         <label className="block text-lg font-bold mb-2">Number of Boxes</label>
         {box.map((boxField, index) => (
-          <div key={index} className="flex items-center mb-2">
-            <input
-              type="number"
-              value={boxField}
-              onChange={(e) => handleBoxChange(index, e.target.value)}
-              placeholder={`Box ${index + 1}`}
-              className="w-full border p-2 mr-2"
-            />
-          </div>
-        ))}
+  <div key={index} className="flex items-center mb-2">
+    <input
+      type="number"
+      value={boxField}
+      onChange={(e) => handleBoxChange(index, e.target.value)}
+      placeholder={`Box ${index + 1}`}
+      className="w-full border p-2 mr-2"
+    />
+    <button
+      type="button"
+      onClick={() => {
+        const newBoxes = [...box];
+        newBoxes.splice(index, 1);
+        setNumberOfBoxes(newBoxes);
+      }}
+      className="text-red-500 font-bold"
+    >
+      ❌
+    </button>
+  </div>
+))}
+
+
         <button
           type="button"
           onClick={handleAddBox}
@@ -210,16 +223,28 @@ export default function AddProduct() {
       <div className="mb-4">
         <label className="block text-lg font-bold mb-2">Sizes</label>
         {sizes.map((sizeField, index) => (
-          <div key={index} className="flex items-center mb-2">
-            <input
-              type="text"
-              value={sizeField}
-              onChange={(e) => handleSizeChange(index, e.target.value)}
-              placeholder={`Size ${index + 1}`}
-              className="w-full border p-2 mr-2"
-            />
-          </div>
-        ))}
+  <div key={index} className="flex items-center mb-2">
+    <input
+      type="text"
+      value={sizeField}
+      onChange={(e) => handleSizeChange(index, e.target.value)}
+      placeholder={`Size ${index + 1}`}
+      className="w-full border p-2 mr-2"
+    />
+    <button
+      type="button"
+      onClick={() => {
+        const newSizes = [...sizes];
+        newSizes.splice(index, 1);
+        setSizes(newSizes);
+      }}
+      className="text-red-500 font-bold"
+    >
+      ❌
+    </button>
+  </div>
+))}
+
         <button
           type="button"
           onClick={handleAddSize}

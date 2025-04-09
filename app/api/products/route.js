@@ -55,8 +55,11 @@ console.log("body are: ",body);
 export async function GET(req) {
   try {
     const products = await prisma.product.findMany({
-      
+      orderBy: {
+        id: 'desc',
+      },
     });
+    
 
     return new Response(JSON.stringify(products), {
       status: 200,

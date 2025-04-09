@@ -263,15 +263,11 @@ function EditProductForm({ product, onCancel, onSave }) {
 
   const handleColorSelect = (selectedColor) => {
     if (color.includes(selectedColor)) {
-      // Remove the color if it's already selected
       setColors(color.filter((c) => c !== selectedColor));
     } else {
-      // Add the color to the selected colors array
       setColors([...color, selectedColor]);
     }
   };
-  
-  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -316,6 +312,7 @@ function EditProductForm({ product, onCancel, onSave }) {
         />
       </div>
 
+      {/* Category */}
       <div className="mb-4">
         <label htmlFor="category" className="block text-sm font-medium text-gray-700">
           Category
@@ -346,6 +343,7 @@ function EditProductForm({ product, onCancel, onSave }) {
         )}
       </div>
 
+      {/* Brand */}
       <div className="mb-4">
         <label htmlFor="brand" className="block text-sm font-medium text-gray-700">
           Brand
@@ -376,6 +374,7 @@ function EditProductForm({ product, onCancel, onSave }) {
         )}
       </div>
 
+      {/* Price */}
       <div className="mb-4">
         <label htmlFor="price" className="block text-sm font-medium text-gray-700">
           Price
@@ -391,16 +390,16 @@ function EditProductForm({ product, onCancel, onSave }) {
         />
       </div>
 
-      {/* Dynamic Number of Boxes Fields */}
+      {/* Boxes */}
       <div className="mb-4">
         <label htmlFor="numberOfBoxes" className="block text-sm font-medium text-gray-700">
           Number of Boxes
         </label>
-        {box?.map((box, index) => (
+        {box?.map((boxItem, index) => (
           <div key={index} className="flex items-center mb-2">
             <input
               type="number"
-              value={box}
+              value={boxItem}
               onChange={(e) => handleBoxChange(index, e.target.value)}
               className="w-full border p-2 mr-2"
               placeholder="Box Number"
@@ -409,7 +408,7 @@ function EditProductForm({ product, onCancel, onSave }) {
               type="button"
               onClick={() => {
                 const updatedBoxes = box.filter((_, i) => i !== index);
-                setNumberOfBoxesArray(updatedBoxes); // Remove the box at the current index
+                setNumberOfBoxesArray(updatedBoxes);
               }}
               className="bg-red-500 text-white px-2 py-1"
             >
@@ -426,20 +425,30 @@ function EditProductForm({ product, onCancel, onSave }) {
         </button>
       </div>
 
-      {/* Sizes Inputs */}
+      {/* Sizes */}
       <div className="mb-4">
         <label htmlFor="sizes" className="block text-sm font-medium text-gray-700">
           Sizes
         </label>
-        {size?.map((size, index) => (
+        {size?.map((sizeValue, index) => (
           <div key={index} className="flex items-center mb-2">
             <input
               type="text"
-              value={size}
+              value={sizeValue}
               onChange={(e) => handleSizeChange(index, e.target.value)}
               className="w-full border p-2 mr-2"
               placeholder="Size"
             />
+            <button
+              type="button"
+              onClick={() => {
+                const updatedSizes = size.filter((_, i) => i !== index);
+                setSizes(updatedSizes);
+              }}
+              className="bg-red-500 text-white px-2 py-1"
+            >
+              X
+            </button>
           </div>
         ))}
         <button
@@ -451,25 +460,26 @@ function EditProductForm({ product, onCancel, onSave }) {
         </button>
       </div>
 
-      {/* Colors Selection */}
+      {/* Colors */}
       <div className="mb-4">
-  <label className="block text-sm font-medium text-gray-700">Colors</label>
-  <div className="flex flex-wrap">
-    {colorOptions.map((colorOption) => (
-      <div
-        key={colorOption}
-        onClick={() => handleColorSelect(colorOption)}
-        className={`w-8 h-8 m-2 cursor-pointer rounded-full relative border-2 ${color.includes(colorOption) ? 'border-black' : ''}`}
-        style={{ backgroundColor: colorOption }}
-      >
-        {color.includes(colorOption) && (
-          <FaCheck className="text-white absolute top-1 left-1 w-4 h-4" />
-        )}
+        <label className="block text-sm font-medium text-gray-700">Colors</label>
+        <div className="flex flex-wrap">
+          {colorOptions.map((colorOption) => (
+            <div
+              key={colorOption}
+              onClick={() => handleColorSelect(colorOption)}
+              className={`w-8 h-8 m-2 cursor-pointer rounded-full relative border-2 ${
+                color.includes(colorOption) ? 'border-black' : ''
+              }`}
+              style={{ backgroundColor: colorOption }}
+            >
+              {color.includes(colorOption) && (
+                <FaCheck className="text-white absolute top-1 left-1 w-4 h-4" />
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-    ))}
-  </div>
-</div>
-
 
       {/* Description */}
       <div className="mb-4">
@@ -483,7 +493,7 @@ function EditProductForm({ product, onCancel, onSave }) {
         />
       </div>
 
-      {/* New Arrival Checkbox */}
+      {/* New Arrival */}
       <div className="mb-4">
         <input
           type="checkbox"
@@ -510,4 +520,5 @@ function EditProductForm({ product, onCancel, onSave }) {
     </form>
   );
 }
+
 
