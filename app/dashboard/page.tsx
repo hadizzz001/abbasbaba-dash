@@ -170,7 +170,8 @@ export default function ProductTable() {
             <tr key={product.id} className="hover:bg-gray-50">
               <td className="border p-2">{product.title}</td>
               <td className="border p-2">
-                <img src={`api/proxy?url=${product.img[0]}`} alt="Product Image" className="w-24 h-auto" />
+              <img src={`${product.img[0].replace('/upload/', '/upload/f_auto,q_10/')}`} alt="Product Image" className="w-24 h-auto" />
+
               </td>
               <td className="border p-2">{product.price}</td> 
               <td className="border p-2">{product.brand}</td> 

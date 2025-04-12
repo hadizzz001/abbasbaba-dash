@@ -155,7 +155,7 @@ const ManageCategory = () => {
           {categories.length > 0 ? (
             categories.map((category) => (
               <tr key={category.id}> 
-                <td className="border border-gray-300 p-2"><img src={`api/proxy?url=${category.img[0]}`}  alt="Product Image" className="w-24 h-auto" /></td>
+                <td className="border border-gray-300 p-2"><img src={`${category.img[0]}`}  alt="Product Image" className="w-24 h-auto" /></td>
                 <td className="border border-gray-300 p-2 text-center">
                   <button
                     onClick={() => handleEdit(category)}
