@@ -80,6 +80,6 @@ model Offer1 {
 
 model Code {
   id   String   @id @default(auto()) @map("_id") @db.ObjectId
-  code String[]
+  code String
   isUsed Boolean @default(false)
 }

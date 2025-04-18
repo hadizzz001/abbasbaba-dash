@@ -11,40 +11,28 @@ function generateRandomCode(length = 10) {
   return result;
 }
 
-export async function PATCH(req) {
+export async function GET(req) {
   try {
-    const url = new URL(req.url);
-    const id = url.searchParams.get('id');
-    if (!id) {
-      return new Response(JSON.stringify({ error: 'ID is required' }), { status: 400 });
-    }
-
-    // Fetch the current codes from DB
-    const existing = await prisma.code.findUnique({ where: { id } });
-    if (!existing) {
-      return new Response(JSON.stringify({ error: 'Code record not found' }), { status: 404 });
-    }
-
-    const newCode = generateRandomCode();
-
-    const updatedCategory = await prisma.code.update({
-      where: { id },
-      data: {
-        code: [...existing.code, newCode], // append new code
-      },
-    });
-
-    return new Response(
-      JSON.stringify({ message: 'Code added successfully', updatedCategory }),
-      { status: 200 }
-    );
+    const codes = await prisma.code.findMany();
+    return new Response(JSON.stringify(codes), { status: 200 });
   } catch (error) {
-    console.error('Error updating code:', error);
-    return new Response(JSON.stringify({ error: 'Failed to update code' }), { status: 500 });
+    console.error('Error fetching codes:', error);
+    return new Response(JSON.stringify({ error: 'Failed to fetch codes' }), { status: 500 });
   }
 }
 
-
-
-
- 
+export async function POST(req) {
+  try {
+    const generatedCode = generateRandomCode();
+    const savedCode = await prisma.code.create({
+      data: { code: generatedCode },
+    });
+    return new Response(
+      JSON.stringify({ message: 'Code created successfully', code: savedCode }),
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error('Error creating code:', error);
+    return new Response(JSON.stringify({ error: 'Failed to create code' }), { status: 500 });
+  }
+}

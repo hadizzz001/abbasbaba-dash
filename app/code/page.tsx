@@ -1,50 +1,44 @@
-// app/generate-code/page.tsx
 'use client';
 
 import { useState } from 'react';
 
-export default function GenerateCodePage() {
-  const [result, setResult] = useState('');
+export default function CodePage() {
+  const [generatedCode, setGeneratedCode] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleGenerateCode = async () => {
+  const handleGenerate = async () => {
     setLoading(true);
-    setResult('');
-
-    // 👇 Replace this with the actual ID of the record in your DB
-    const id = '68023f1155355b32519511b3';
-
     try {
-      const res = await fetch(`/api/code?id=${id}`, {
-        method: 'PATCH',
-      });
-
+      const res = await fetch('/api/code', { method: 'POST' });
       const data = await res.json();
 
-      if (res.ok) {
-        setResult(`${data.updatedCategory.code.slice(-1)[0]}`);
+      if (res.ok && data.code?.code) {
+        setGeneratedCode(data.code.code);
       } else {
-        setResult(`❌ Error: ${data.error}`);
+        setGeneratedCode('Error generating code');
       }
-    } catch (err) {
-      setResult('❌ Failed to call API.');
+    } catch (error) {
+      console.error(error);
+      setGeneratedCode('Server error');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
       <button
-        onClick={handleGenerateCode}
+        onClick={handleGenerate}
+        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         disabled={loading}
-        className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition disabled:opacity-50"
       >
-        {loading ? 'Generating...' : 'Generate New Code'}
+        {loading ? 'Generating...' : 'Generate Code'}
       </button>
 
-      {result && (
-        <p className="mt-4 text-lg text-gray-800">{result}</p>
+      {generatedCode && (
+        <p className="mt-4 text-xl text-green-700">
+          <span className="font-mono">{generatedCode}</span>
+        </p>
       )}
     </div>
   );
