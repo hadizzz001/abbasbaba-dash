@@ -69,6 +69,26 @@ export default function Sidebar() {
                 Banner
               </a>
             </li>
+            <li>
+              <a href="/banner1" style={{ color: "white", textDecoration: "none" }}>
+                Middle Banner
+              </a>
+            </li>
+            <li>
+              <a href="/offer" style={{ color: "white", textDecoration: "none" }}>
+                Text Offer
+              </a>
+            </li>
+            <li>
+              <a href="/offer1" style={{ color: "white", textDecoration: "none" }}>
+                Offer Banner
+              </a>
+            </li>
+            <li>
+              <a href="/code" style={{ color: "white", textDecoration: "none" }}>
+                Codes
+              </a>
+            </li>
             {/* <li>
               <a href="/hot" style={{ color: "white", textDecoration: "none" }}>
                 Hot sale header

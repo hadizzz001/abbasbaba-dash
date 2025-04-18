@@ -16,7 +16,7 @@ model Product {
   category    String
   box         Json?
   brand       String
-  size       Json?
+  size        Json?
   color       Json?
   arrival     String   @default("no")
   createdAt   DateTime @default(now())
@@ -58,6 +58,28 @@ model title {
 }
 
 model Banner {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  id  String   @id @default(auto()) @map("_id") @db.ObjectId
+  img String[]
+}
+
+model Banner1 {
+  id  String   @id @default(auto()) @map("_id") @db.ObjectId
+  img String[]
+}
+
+model Offer {
+  id   String   @id @default(auto()) @map("_id") @db.ObjectId
+  text String[]
+}
+
+model Offer1 {
+  id   String   @id @default(auto()) @map("_id") @db.ObjectId
+  text String
   img  String[]
+}
+
+model Code {
+  id   String   @id @default(auto()) @map("_id") @db.ObjectId
+  code String[]
+  isUsed Boolean @default(false)
 }
