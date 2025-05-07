@@ -20,6 +20,7 @@ model Product {
   color       Json?
   arrival     String   @default("no")
   createdAt   DateTime @default(now())
+  views       Int? @default(20)
 }
 
 model Category {
@@ -79,7 +80,7 @@ model Offer1 {
 }
 
 model Code {
-  id   String   @id @default(auto()) @map("_id") @db.ObjectId
-  code String
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
+  code   String
   isUsed Boolean @default(false)
 }
