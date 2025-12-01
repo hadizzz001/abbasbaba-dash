@@ -84,3 +84,13 @@ model Code {
   code   String
   isUsed Boolean @default(false)
 }
+
+
+model PushToken {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  guestId   String
+  token     String
+  createdAt DateTime @default(now())
+
+  @@unique([guestId, token])
+}

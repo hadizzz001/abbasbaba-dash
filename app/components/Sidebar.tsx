@@ -89,11 +89,11 @@ export default function Sidebar() {
                 Codes
               </a>
             </li>
-            {/* <li>
-              <a href="/hot" style={{ color: "white", textDecoration: "none" }}>
-                Hot sale header
+            <li>
+              <a href="/note" style={{ color: "white", textDecoration: "none" }}>
+                Notification
               </a>
-            </li> */}
+            </li>
             <li>
               <a href="/" style={{ color: "white", textDecoration: "none" }}>
                 Logout
