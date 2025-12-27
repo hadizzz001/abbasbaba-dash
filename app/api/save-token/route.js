@@ -7,23 +7,25 @@ export async function POST(req) {
     const { token, guestId } = await req.json();
 
     if (!token || !guestId) {
-      return new Response(JSON.stringify({ error: 'Missing token or guestId' }), { status: 400 });
+      return new Response(
+        JSON.stringify({ error: 'Missing token or guestId' }),
+        { status: 400 }
+      );
     }
 
-    // Check if token already exists for this guest
-    const existing = await prisma.pushToken.findFirst({
-      where: { guestId, token },
+    // Upsert by token (ONE TOKEN = ONE DEVICE)
+    await prisma.pushToken.upsert({
+      where: { token },
+      update: { guestId },
+      create: { token, guestId },
     });
-
-    if (!existing) {
-      await prisma.pushToken.create({
-        data: { guestId, token },
-      });
-    }
 
     return new Response(JSON.stringify({ success: true }), { status: 200 });
   } catch (err) {
     console.error('Error saving token:', err);
-    return new Response(JSON.stringify({ error: 'Failed to save token' }), { status: 500 });
+    return new Response(
+      JSON.stringify({ error: 'Failed to save token' }),
+      { status: 500 }
+    );
   }
 }

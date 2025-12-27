@@ -86,3 +86,27 @@ export async function POST(req) {
     );
   }
 }
+
+
+
+
+export async function DELETE() {
+  try {
+    const result = await prisma.pushToken.deleteMany();
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        deletedCount: result.count,
+        message: 'All push tokens deleted successfully',
+      }),
+      { status: 200 }
+    );
+  } catch (err) {
+    console.error('Error deleting tokens:', err);
+    return new Response(
+      JSON.stringify({ error: 'Failed to delete tokens' }),
+      { status: 500 }
+    );
+  }
+}

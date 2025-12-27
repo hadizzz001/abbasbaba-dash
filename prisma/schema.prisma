@@ -89,7 +89,7 @@ model Code {
 model PushToken {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   guestId   String
-  token     String
+  token     String @unique
   createdAt DateTime @default(now())
 
   @@unique([guestId, token])
